@@ -22,6 +22,7 @@ import scala.concurrent._
 import scala.concurrent.duration.Duration
 import scala.io.Source
 import scala.util.Try
+import scala.util.matching.Regex
 import collection.JavaConversions._
 
 // Java
@@ -175,12 +176,12 @@ class PiiEmitSpec extends Specification {
       }
 
       // Converts the entire "expected" results from the other tests to a regex string
-      private def spaceJoinResult(expected: List[StringOrRegex]) =
+      private def spaceJoinResult(expected: List[Either[String, Regex]]) =
         expected
           .flatMap({
-            case JustRegex(r)                => Some(r.toString)
-            case JustString(s) if s.nonEmpty => Some(Pattern.quote(s))
-            case _                           => None
+            case Right(r)              => Some(r.toString)
+            case Left(s) if s.nonEmpty => Some(Pattern.quote(s))
+            case _                     => None
           })
           .mkString("\\s*")
 

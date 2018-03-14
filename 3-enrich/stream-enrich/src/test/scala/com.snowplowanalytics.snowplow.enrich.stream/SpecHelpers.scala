@@ -28,22 +28,16 @@ import common.enrichments.EnrichmentRegistry
 import iglu.client.Resolver
 import model._
 import scala.util.matching.Regex
+import scala.util.Either
 import sources.TestSource
-
-/**
- * Helper trait to get list of expected results that contain either a String or a Regex
- */
-sealed trait StringOrRegex
-case class JustString(s: String) extends StringOrRegex
-case class JustRegex(r: Regex)   extends StringOrRegex
 
 /**
  * Defines some useful helpers for the specs.
  */
 object SpecHelpers {
 
-  implicit def stringToJustString(s: String) = JustString(s)
-  implicit def regexToJustRegex(r: Regex)    = JustRegex(r)
+  implicit def stringToJustString(s: String) = Left(s)
+  implicit def regexToJustRegex(r: Regex)    = Right(r)
 
   /**
    * The Stream Enrich being used
@@ -80,7 +74,7 @@ object SpecHelpers {
    * User-friendly wrapper to instantiate
    * a BeFieldEqualTo Matcher.
    */
-  def beFieldEqualTo(expected: StringOrRegex, withIndex: Int) =
+  def beFieldEqualTo(expected: Either[String, Regex], withIndex: Int) =
     new BeFieldEqualTo(expected, withIndex)
 
   /**
@@ -94,12 +88,12 @@ object SpecHelpers {
    * 2. On failure, print out the field's name as
    *    well as the mismatch, to help with debugging
    */
-  class BeFieldEqualTo(expected: StringOrRegex, index: Int) extends Matcher[String] {
+  class BeFieldEqualTo(expected: Either[String, Regex], index: Int) extends Matcher[String] {
 
     private val field = OutputFields(index)
     private val regexp = expected match {
-      case JustRegex(_)  => true
-      case JustString(_) => false
+      case Right(_) => true
+      case Left(_)  => false
     }
 
     def apply[S <: String](actual: Expectable[S]) = {
@@ -125,10 +119,11 @@ object SpecHelpers {
      * @return true if the actual equals or
      * matches expected, false otherwise
      */
-    private def equalsOrMatches(actual: String, expected: StringOrRegex): Boolean = expected match {
-      case JustRegex(r)  => r.pattern.matcher(actual).matches
-      case JustString(s) => actual == s
-    }
+    private def equalsOrMatches(actual: String, expected: Either[String, Regex]): Boolean =
+      expected match {
+        case Right(r) => r.pattern.matcher(actual).matches
+        case Left(s)  => actual == s
+      }
 
     /**
      * Whether a field in EnrichedEvent needs
