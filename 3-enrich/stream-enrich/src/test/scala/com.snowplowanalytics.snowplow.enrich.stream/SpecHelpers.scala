@@ -308,7 +308,8 @@ object SpecHelpers {
             |],
             |"strategy": {
               |"pseudonymize": {
-                |"hashFunction": "SHA-1"
+                |"hashFunction": "SHA-1",
+                |"salt": "pepper123"
               |}
             |}
           |}

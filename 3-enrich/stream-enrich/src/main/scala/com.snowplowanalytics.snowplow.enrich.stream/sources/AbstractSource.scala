@@ -170,8 +170,7 @@ abstract class AbstractSource(
   implicit val resolver: Resolver = igluResolver
 
   def getPiiEvent(event: EnrichedEvent): Option[String] =
-    if (event.pii == null || event.pii.isEmpty) None
-    else Some(event.pii)
+    Option(event.pii).filter(_.nonEmpty)
 
   // Iterate through an enriched EnrichedEvent object and tab separate
   // the fields to a string.
