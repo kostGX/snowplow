@@ -177,7 +177,7 @@ class StructEventWithContextSpec extends Specification {
       // "-1" prevents empty strings from being discarded from the end of the array
       val fields = enrichedEvent.toOption.get._1.split("\t", -1)
       fields.size must beEqualTo(StructEventWithContextSpec.expected.size)
-      enrichedEvent.toOption.get._3.get must_== StructEventWithContextSpec.pii
+      enrichedEvent.toOption.get._3 must beSome(StructEventWithContextSpec.pii)
       Result.unit(
         for (idx <- StructEventWithContextSpec.expected.indices) {
           fields(idx) must beFieldEqualTo(StructEventWithContextSpec.expected(idx), withIndex = idx)

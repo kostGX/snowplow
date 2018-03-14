@@ -177,7 +177,7 @@ class TransactionSpec extends Specification {
       // "-1" prevents empty strings from being discarded from the end of the array
       val fields = enrichedEvent.toOption.get._1.split("\t", -1)
       fields.size must beEqualTo(TransactionSpec.expected.size)
-      enrichedEvent.toOption.get._3.get must_== TransactionSpec.pii
+      enrichedEvent.toOption.get._3 must beSome(TransactionSpec.pii)
       Result.unit(
         for (idx <- TransactionSpec.expected.indices) {
           fields(idx) must beFieldEqualTo(TransactionSpec.expected(idx), withIndex = idx)

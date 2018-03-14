@@ -180,7 +180,7 @@ class StructEventSpec extends Specification {
       val fields = enrichedEvent.toOption.get._1.split("\t", -1)
       fields.size must beEqualTo(StructEventSpec.expected.size)
 
-      enrichedEvent.toOption.get._3.get must_== StructEventSpec.pii
+      enrichedEvent.toOption.get._3 must beSome(StructEventSpec.pii)
 
       Result.unit(
         for (idx <- StructEventSpec.expected.indices) {

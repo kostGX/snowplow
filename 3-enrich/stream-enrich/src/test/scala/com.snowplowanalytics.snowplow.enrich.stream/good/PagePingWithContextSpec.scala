@@ -178,7 +178,7 @@ class PagePingWithContextSpec extends Specification {
       // "-1" prevents empty strings from being discarded from the end of the array
       val fields = enrichedEvent.toOption.get._1.split("\t", -1)
       fields.size must beEqualTo(PagePingWithContextSpec.expected.size)
-      enrichedEvent.toOption.get._3.get must_== PagePingWithContextSpec.pii
+      enrichedEvent.toOption.get._3 must beSome(PagePingWithContextSpec.pii)
       Result.unit(
         for (idx <- PagePingWithContextSpec.expected.indices) {
           fields(idx) must beFieldEqualTo(PagePingWithContextSpec.expected(idx), withIndex = idx)

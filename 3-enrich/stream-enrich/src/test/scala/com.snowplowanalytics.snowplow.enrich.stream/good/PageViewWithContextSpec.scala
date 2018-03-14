@@ -178,7 +178,7 @@ class PageViewWithContextSpec extends Specification {
       val fields = enrichedEvent.toOption.get._1.split("\t", -1)
       fields.size must beEqualTo(PageViewWithContextSpec.expected.size)
 
-      enrichedEvent.toOption.get._3.get must_== PageViewWithContextSpec.pii
+      enrichedEvent.toOption.get._3 must beSome(PageViewWithContextSpec.pii)
 
       Result.unit(
         for (idx <- PageViewWithContextSpec.expected.indices) {
